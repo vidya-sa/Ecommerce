@@ -1,4 +1,4 @@
-import React from "react";
+import React,{useEffect,useState} from "react";
 import { useParams } from "react-router-dom";
 import { Link } from "react-router-dom";
 import {
@@ -9,13 +9,26 @@ import {
   Card,
   Button,
 } from "react-bootstrap";
+import axios from 'axios'
 import Rating from "../components/Rating";
 
 const Productpage = () => {
-  const { id: productId } = useParams;
-  const products = [];
-  const product = products.find((pro) => pro._id === productId);
-  console.log(product);
+  const[product,setProduct] = useState({})
+  const { id: productId } = useParams();
+  useEffect(() => {
+    const fetchProduct = async () => { // Corrected function name
+      try {
+        const { data } = await axios.get(`/api/products/${productId}`);
+        setProduct(data);
+      } catch (error) {
+        console.error("Error fetching products:", error);
+      }
+    };
+    fetchProduct();
+  }, [productId]);
+
+  console.log(product)
+  
   return (
     <>
       <Link className="btn btn-light my-3" to="/">
